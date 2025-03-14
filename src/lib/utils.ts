@@ -22,14 +22,10 @@ export function mapError(error: unknown) {
 
   if (isFirebaseError(error)) {
     switch (error.code) {
-      case "validation_failed":
-        return "Neispravni podaci.";
-      case "invalid_credentials":
+      case "auth/invalid-credential":
         return "Račun s tim podacima ne postoji.";
-      case "weak_password":
-        return "Lozinka mora biti barem 6 znakova duga.";
-      case "user_already_exists":
-        return "Račun s tim emailom već postoji.";
+      case "auth/email-already-in-use":
+        return "Email adresa je već u upotrebi.";
       default:
         return error.message;
     }

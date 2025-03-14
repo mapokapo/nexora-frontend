@@ -1,0 +1,16 @@
+import { useAppProfile } from "@/lib/context/profile-provider";
+import React from "react";
+
+const HomePage: React.FC = () => {
+  const profile = useAppProfile();
+
+  return (
+    <div className="flex h-full flex-col items-center justify-center">
+      <h1 className="text-4xl font-bold">
+        Welcome {profile.name?.toString() ?? "User"}!
+      </h1>
+    </div>
+  );
+};
+
+export default HomePage;

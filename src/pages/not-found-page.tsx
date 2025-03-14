@@ -9,7 +9,7 @@ const NotFoundPage: React.FC = () => {
       <h1 className="text-4xl font-bold">404 Not Found</h1>
       <Button
         onClick={() => {
-          void navigate(-1);
+          navigate(-1);
         }}
         className="mt-4">
         Go back

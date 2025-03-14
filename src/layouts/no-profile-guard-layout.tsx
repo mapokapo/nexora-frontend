@@ -1,49 +1,14 @@
 import { Loading } from "@/components/loading";
 import { Button } from "@/components/ui/button";
-import { ProfileProvider, useProfile } from "@/lib/context/profile-provider";
-import { useUser } from "@/lib/context/user-provider";
+import { useProfile } from "@/lib/context/profile-provider";
 import { auth } from "@/lib/firebase";
 import { signOut } from "firebase/auth";
 import { LogOut, X } from "lucide-react";
 import React from "react";
-import { Navigate, Outlet, useLocation } from "react-router";
+import { Navigate, Outlet } from "react-router";
 
-const AppLayout: React.FC = () => {
-  const { user } = useUser();
-  const { pathname } = useLocation();
-
-  if (!user.loaded) {
-    return (
-      <div className="flex min-h-screen w-full flex-col items-center justify-center">
-        <Loading />
-        <span className="mt-4 text-muted-foreground">
-          Reading authentication state...
-        </span>
-      </div>
-    );
-  }
-
-  if (user.data !== null) {
-    return (
-      <ProfileProvider user={user.data}>
-        <ProfileLoader />
-      </ProfileProvider>
-    );
-  } else {
-    return (
-      <Navigate
-        to="/auth"
-        state={{
-          from: pathname,
-        }}
-      />
-    );
-  }
-};
-
-function ProfileLoader() {
+const NoProfileGuardLayout: React.FC = () => {
   const { profile } = useProfile();
-  const { pathname } = useLocation();
 
   if (profile.loaded) {
     if ("error" in profile) {
@@ -63,7 +28,7 @@ function ProfileLoader() {
             variant="destructive"
             className="mt-6 flex gap-2"
             onClick={() => {
-              void signOut(auth);
+              signOut(auth);
             }}>
             <LogOut size={24} />
             <span>Log out</span>
@@ -71,11 +36,21 @@ function ProfileLoader() {
         </div>
       );
     }
-    if (profile.data === null && pathname !== "/create-profile") {
-      return <Navigate to="/create-profile" />;
-    } else if (profile.data !== null && pathname === "/create-profile") {
-      return <Navigate to="/" />;
+
+    if (profile.data !== null) {
+      return (
+        <Navigate
+          to="/"
+          replace
+        />
+      );
     }
+
+    return (
+      <div className="flex min-h-screen w-full flex-col">
+        <Outlet />
+      </div>
+    );
   } else {
     return (
       <div className="flex min-h-screen w-full flex-col items-center justify-center">
@@ -86,12 +61,6 @@ function ProfileLoader() {
       </div>
     );
   }
+};
 
-  return (
-    <div className="flex min-h-screen w-full flex-col">
-      <Outlet />
-    </div>
-  );
-}
-
-export default AppLayout;
+export default NoProfileGuardLayout;
