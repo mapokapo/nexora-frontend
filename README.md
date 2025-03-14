@@ -95,6 +95,27 @@ or
 npm run dev
 ```
 
+## ℹ Git commit message conventions
+
+The commits in this repo are organized using the following format:
+
+```
+<type>(<scope>): <subject>
+```
+
+The type represents the type of change being made, the scope represents the
+affected module, and the subject is a brief description of the change.
+
+The available types are: `feat`, `fix`, `docs`, `style`, `refactor`, `test`,
+`deps`, and `chore`.
+
+Examples:
+
+- `feat(auth): add Google authentication`
+- `fix(posts): fix post creation bug`
+- `docs(readme): update installation instructions`
+- `deps: install Tailwind CSS`
+
 ## 📜 License
 
 This project is licensed under the **MIT License**.
