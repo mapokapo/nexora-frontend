@@ -6,9 +6,7 @@ const HomePage: React.FC = () => {
 
   return (
     <div className="flex h-full flex-col items-center justify-center">
-      <h1 className="text-4xl font-bold">
-        Welcome {profile.name?.toString() ?? "User"}!
-      </h1>
+      <h1 className="text-4xl font-bold">Welcome {profile.name}!</h1>
     </div>
   );
 };

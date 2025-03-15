@@ -2,6 +2,7 @@ import {
   ProfileProviderProps,
   Profile,
   ProfileProviderContext,
+  profileSchema,
 } from "@/lib/context/profile-context";
 import { firestore } from "@/lib/firebase";
 import AsyncResult from "@/lib/types/AsyncResult";
@@ -31,10 +32,22 @@ export const ProfileProvider: React.FC<ProfileProviderProps> = ({
       doc(firestore, "profiles", user.uid),
       snapshot => {
         if (snapshot.exists()) {
-          setProfile({
-            loaded: true,
-            data: snapshot.data(),
-          });
+          const result = profileSchema.safeParse(snapshot.data());
+
+          if (!result.success) {
+            const message = "Profile data is corrupted";
+            toast.error(message);
+
+            setProfile({
+              loaded: true,
+              error: new Error(message),
+            });
+          } else {
+            setProfile({
+              loaded: true,
+              data: result.data,
+            });
+          }
         } else {
           setProfile({
             loaded: true,
