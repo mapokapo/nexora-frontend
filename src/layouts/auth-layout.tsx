@@ -9,7 +9,7 @@ const AuthLayout: React.FC = () => {
 
   if (!user.loaded) {
     return (
-      <div className="flex min-h-screen w-full flex-col items-center justify-center">
+      <div className="flex w-full flex-1 flex-col items-center justify-center">
         <Loading />
         <span className="mt-4 text-muted-foreground">
           Reading authentication state...
@@ -36,11 +36,7 @@ const AuthLayout: React.FC = () => {
     );
   }
 
-  return (
-    <div className="flex min-h-screen w-full flex-col">
-      <Outlet />
-    </div>
-  );
+  return <Outlet />;
 };
 
 export default AuthLayout;

@@ -8,7 +8,7 @@ const Navbar: React.FC = () => {
   const [search, setSearch] = useState("");
 
   return (
-    <nav className="flex w-full flex-col items-center justify-between gap-2 bg-card p-4 sm:flex-row sm:gap-8">
+    <nav className="z-10 flex w-full flex-col items-center justify-between gap-2 border-b border-border bg-card p-4 shadow-lg shadow-black/50 sm:flex-row sm:gap-8">
       <NexoraLogo className="hidden sm:flex" />
       <SearchBar
         className="min-w-48 sm:max-w-[500px]"

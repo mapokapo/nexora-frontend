@@ -19,7 +19,7 @@ const ErrorComponent: React.FC<ErrorComponentProps> = ({
   const navigate = useNavigate();
 
   return (
-    <div className="flex min-h-screen w-full flex-col items-center justify-center">
+    <div className="flex w-full flex-1 flex-col items-center justify-center">
       <X
         size={48}
         className="rounded-full bg-destructive p-1 text-destructive-foreground"
