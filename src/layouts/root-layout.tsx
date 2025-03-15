@@ -1,5 +1,5 @@
+import { UserProvider } from "@/components/providers/user-provider";
 import { Toaster } from "@/components/ui/sonner";
-import { UserProvider } from "@/lib/context/user-provider";
 import { Outlet } from "react-router";
 
 const RootLayout: React.FC = () => {

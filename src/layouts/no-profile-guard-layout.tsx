@@ -1,7 +1,7 @@
 import { Loading } from "@/components/loading";
 import { Button } from "@/components/ui/button";
-import { useProfile } from "@/lib/context/profile-provider";
 import { auth } from "@/lib/firebase";
+import { useProfile } from "@/lib/hooks/use-profile";
 import { signOut } from "firebase/auth";
 import { LogOut, X } from "lucide-react";
 import React from "react";

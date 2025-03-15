@@ -1,6 +1,6 @@
 import CreateProfileComponent from "@/components/create-profile";
-import { useAppUser } from "@/lib/context/user-provider";
 import { firestore } from "@/lib/firebase";
+import { useAppUser } from "@/lib/hooks/use-user";
 import { mapError } from "@/lib/utils";
 import { doc, setDoc } from "firebase/firestore";
 import { useState } from "react";

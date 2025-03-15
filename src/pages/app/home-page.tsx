@@ -1,4 +1,4 @@
-import { useAppProfile } from "@/lib/context/profile-provider";
+import { useAppProfile } from "@/lib/hooks/use-profile";
 import React from "react";
 
 const HomePage: React.FC = () => {

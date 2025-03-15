@@ -1,6 +1,6 @@
 import { Loading } from "@/components/loading";
-import { useProfile } from "@/lib/context/profile-provider";
-import { useUser } from "@/lib/context/user-provider";
+import { useProfile } from "@/lib/hooks/use-profile";
+import { useUser } from "@/lib/hooks/use-user";
 import { Navigate, Outlet } from "react-router";
 
 const AuthLayout: React.FC = () => {
