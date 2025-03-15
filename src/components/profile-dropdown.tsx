@@ -1,4 +1,4 @@
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import ProfilePicture from "@/components/profile-picture";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -19,18 +19,13 @@ const ProfileDropdown: React.FC = () => {
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button
-          className="rounded-full"
-          variant="link"
+          className="rounded-full !bg-transparent"
+          variant="ghost"
           size="icon">
-          <Avatar>
-            <AvatarImage src={user.photoURL ?? undefined} />
-            <AvatarFallback className="bg-secondary font-bold text-secondary-foreground">
-              {(user.displayName ?? profile.name)
-                .split(" ")
-                .map(name => name[0])
-                .join("")}
-            </AvatarFallback>
-          </Avatar>
+          <ProfilePicture
+            user={user}
+            profile={profile}
+          />
           <span className="sr-only">Open profile options</span>
         </Button>
       </DropdownMenuTrigger>
