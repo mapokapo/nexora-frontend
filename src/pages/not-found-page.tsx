@@ -1,19 +1,13 @@
-import { Button } from "@/components/ui/button";
-import { useNavigate } from "react-router";
+import ErrorComponent from "@/components/partials/error-component";
 
 const NotFoundPage: React.FC = () => {
-  const navigate = useNavigate();
-
   return (
-    <div className="flex h-full flex-col items-center justify-center">
-      <h1 className="text-4xl font-bold">404 Not Found</h1>
-      <Button
-        onClick={() => {
-          navigate(-1);
-        }}
-        className="mt-4">
-        Go back
-      </Button>
+    <div className="flex h-full min-h-screen flex-col items-center justify-center">
+      <ErrorComponent
+        title="404 Not Found"
+        message="The page you are looking for does not exist."
+        action="go-back"
+      />
     </div>
   );
 };
