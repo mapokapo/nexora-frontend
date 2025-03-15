@@ -1,4 +1,4 @@
-import LoginComponent from "@/components/login";
+import LoginComponent from "@/components/partials/login";
 import { auth } from "@/lib/firebase";
 import { mapError } from "@/lib/utils";
 import {

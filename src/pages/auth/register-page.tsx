@@ -1,4 +1,4 @@
-import RegisterComponent from "@/components/register";
+import RegisterComponent from "@/components/partials/register";
 import { auth } from "@/lib/firebase";
 import { mapError } from "@/lib/utils";
 import { createUserWithEmailAndPassword } from "firebase/auth";

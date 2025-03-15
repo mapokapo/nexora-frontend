@@ -1,4 +1,4 @@
-import CreateProfileComponent from "@/components/create-profile";
+import CreateProfileComponent from "@/components/partials/create-profile";
 import { firestore } from "@/lib/firebase";
 import { useAppUser } from "@/lib/hooks/use-user";
 import { mapError } from "@/lib/utils";
