@@ -11,7 +11,10 @@ const Loading = React.forwardRef<
       ref={ref}
       className={cn("flex items-center justify-center", className)}
       {...props}>
-      <Loader size="2rem" />
+      <Loader
+        size="2rem"
+        className="animate-spin"
+      />
     </div>
   );
 });
