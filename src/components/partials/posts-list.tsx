@@ -1,14 +1,51 @@
-import React from "react";
+import PostListItem from "@/components/post-list-item";
+import { firestore } from "@/lib/firebase";
+import { Post, postSchema } from "@/lib/types/Post";
+import { collection, onSnapshot } from "firebase/firestore";
+import React, { useEffect, useState } from "react";
 
 const PostsList: React.FC = () => {
+  const [posts, setPosts] = useState<Post[]>([]);
+
+  useEffect(() => {
+    const collectionRef = collection(firestore, "posts");
+
+    return onSnapshot(collectionRef, snapshot => {
+      snapshot.docChanges().forEach(change => {
+        const result = postSchema.safeParse({
+          id: change.doc.id,
+          ...change.doc.data(),
+        });
+
+        if (!result.success) {
+          console.error(result.error.errors);
+          return;
+        }
+
+        const post = result.data;
+
+        switch (change.type) {
+          case "added":
+            setPosts(posts => [...posts, post]);
+            break;
+          case "modified":
+            setPosts(posts => posts.map(p => (p.id === post.id ? post : p)));
+            break;
+          case "removed":
+            setPosts(posts => posts.filter(p => p.id !== post.id));
+            break;
+        }
+      });
+    });
+  }, []);
+
   return (
     <ul className="flex flex-col gap-2 p-2">
-      {new Array(50).fill(0).map((_, i) => (
-        <li
-          key={i}
-          className="rounded-lg bg-primary-foreground bg-opacity-10 p-2">
-          {i + 1}. Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-        </li>
+      {posts.map(post => (
+        <PostListItem
+          key={post.id}
+          post={post}
+        />
       ))}
     </ul>
   );
