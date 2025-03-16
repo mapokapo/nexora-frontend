@@ -23,8 +23,8 @@ const ProfileDropdown: React.FC = () => {
           variant="ghost"
           size="icon">
           <ProfilePicture
-            user={user}
-            profile={profile}
+            userName={user.displayName ?? profile.name}
+            photoURL={user.photoURL}
           />
           <span className="sr-only">Open profile options</span>
         </Button>

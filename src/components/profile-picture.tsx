@@ -1,18 +1,19 @@
-import { Profile } from "@/lib/context/profile-context";
 import { Avatar, AvatarImage, AvatarFallback } from "@radix-ui/react-avatar";
-import { User } from "firebase/auth";
 
 interface ProfilePictureProps {
-  user: User;
-  profile: Profile;
+  photoURL: string | null;
+  userName: string;
 }
 
-const ProfilePicture: React.FC<ProfilePictureProps> = ({ user, profile }) => {
+const ProfilePicture: React.FC<ProfilePictureProps> = ({
+  photoURL,
+  userName,
+}) => {
   return (
-    <Avatar className="flex h-full w-full items-center justify-center rounded-full bg-secondary transition-opacity hover:opacity-75">
-      <AvatarImage src={user.photoURL ?? undefined} />
+    <Avatar className="flex aspect-square h-full w-full items-center justify-center rounded-full bg-secondary transition-opacity hover:opacity-75">
+      <AvatarImage src={photoURL ?? undefined} />
       <AvatarFallback className="font-bold text-secondary-foreground">
-        {(user.displayName ?? profile.name)
+        {userName
           .split(" ")
           .map(name => name[0])
           .join("")}
