@@ -1,13 +1,7 @@
 import AsyncResult from "@/lib/types/AsyncResult";
+import { Profile } from "@/lib/types/Profile";
 import { User } from "firebase/auth";
 import { createContext, PropsWithChildren } from "react";
-import { z } from "zod";
-
-export const profileSchema = z.object({
-  name: z.string().min(1, "Name is required"),
-});
-
-export type Profile = z.infer<typeof profileSchema>;
 
 export type ProfileProviderProps = PropsWithChildren & {
   user: User | null;

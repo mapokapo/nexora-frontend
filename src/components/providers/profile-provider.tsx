@@ -1,11 +1,10 @@
 import {
   ProfileProviderProps,
-  Profile,
   ProfileProviderContext,
-  profileSchema,
 } from "@/lib/context/profile-context";
 import { firestore } from "@/lib/firebase";
 import AsyncResult from "@/lib/types/AsyncResult";
+import { Profile, profileSchema } from "@/lib/types/Profile";
 import { mapError } from "@/lib/utils";
 import { onSnapshot, doc } from "firebase/firestore";
 import { useState, useEffect, useMemo } from "react";

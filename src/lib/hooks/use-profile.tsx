@@ -1,8 +1,8 @@
 import {
   ProfileProviderContext,
-  Profile,
   ProfileProviderState,
 } from "@/lib/context/profile-context";
+import { Profile } from "@/lib/types/Profile";
 import { useContext } from "react";
 
 export function useProfile() {
