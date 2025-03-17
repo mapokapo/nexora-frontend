@@ -70,7 +70,7 @@ const CommentSection: React.FC<CommentSectionProps> = ({
           />
         ))}
       </ul>
-      <CreateCommentForm />
+      <CreateCommentForm post={post} />
     </div>
   ) : (
     <Button
