@@ -125,7 +125,9 @@ const PostListItem: React.FC<PostListItemProps> = ({ post }) => {
           )}
         </Button>
         <span className="text-sm text-muted-foreground">
-          {getRelativeTime(post.createdAt)}
+          {post.createdAt.getTime() === post.updatedAt.getTime()
+            ? (getRelativeTime(post.createdAt) ?? "")
+            : `${getRelativeTime(post.updatedAt) ?? ""} (edited)`}
         </span>
       </div>
       <span className="ml-1 text-lg font-bold">{post.title}</span>
