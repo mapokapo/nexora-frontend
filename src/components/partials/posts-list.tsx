@@ -41,6 +41,9 @@ const PostsList: React.FC = () => {
 
   return (
     <ul className="flex flex-col gap-2 p-2">
+      {posts.length === 0 && (
+        <p className="text-muted-foreground">No posts found.</p>
+      )}
       {posts.map(post => (
         <PostListItem
           key={post.id}
