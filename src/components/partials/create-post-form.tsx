@@ -20,6 +20,7 @@ import { firestore } from "@/lib/firebase";
 import { useAppUser } from "@/lib/hooks/use-user";
 import { cn, mapError } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { TagInput } from "emblor";
 import { addDoc, collection, Timestamp } from "firebase/firestore";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
@@ -29,6 +30,7 @@ import { z } from "zod";
 const formSchema = z.object({
   title: z.string().min(1, "Post title is required"),
   content: z.string().min(1, "Post content is required"),
+  tags: z.array(z.string().min(1, "Tag is required")),
 });
 
 const CreatePostForm: React.FC = () => {
@@ -41,6 +43,7 @@ const CreatePostForm: React.FC = () => {
     defaultValues: {
       title: "",
       content: "",
+      tags: [],
     },
   });
 
@@ -49,6 +52,7 @@ const CreatePostForm: React.FC = () => {
       await addDoc(collection(firestore, "posts"), {
         title: values.title.trim(),
         content: values.content.trim(),
+        tags: values.tags,
         createdAt: Timestamp.now(),
         updatedAt: Timestamp.now(),
         userId: user.uid,
@@ -105,6 +109,55 @@ const CreatePostForm: React.FC = () => {
                         placeholder="Content"
                         disabled={form.formState.isSubmitting}
                         {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="tags"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="flex items-center gap-1">
+                      Tags
+                    </FormLabel>
+                    <FormControl>
+                      <TagInput
+                        {...field}
+                        styleClasses={{
+                          input:
+                            "bg-transparent flex-wrap py-2 px-1 md:text-sm text-base",
+                          inlineTagsContainer:
+                            "p-0 px-2 gap-x-1 gap-y-0 space-y-0 space-x-0",
+                          tag: {
+                            body: "my-1 pb-1 items-center flex h-min",
+                            closeButton: "p-1 pb-0 h-min",
+                          },
+                        }}
+                        placeholder="Add tags (press Enter to confirm tag)"
+                        disabled={form.formState.isSubmitting}
+                        activeTagIndex={null}
+                        setActiveTagIndex={() => {}}
+                        setTags={value => {
+                          let newData: string[];
+
+                          if (typeof value === "function") {
+                            newData = value(
+                              form
+                                .getValues()
+                                .tags.map(t => ({ id: t, text: t }))
+                            ).map(t => t.text);
+                          } else {
+                            newData = value.map(t => t.text);
+                          }
+
+                          form.setValue("tags", newData);
+                        }}
+                        tags={form
+                          .getValues()
+                          .tags.map(t => ({ id: t, text: t }))}
                       />
                     </FormControl>
                     <FormMessage />

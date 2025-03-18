@@ -255,8 +255,17 @@ const PostListItem: React.FC<PostListItemProps> = ({ post }) => {
           </div>
         )}
       </div>
+      <div className="my-1 ml-1 flex flex-wrap gap-2">
+        {post.tags.map(tag => (
+          <span
+            key={tag}
+            className="text-sm text-muted-foreground">
+            #{tag}
+          </span>
+        ))}
+      </div>
       <TooltipProvider>
-        <div className="mt-2 flex items-center gap-2">
+        <div className="flex items-center gap-2">
           <Tooltip>
             <TooltipTrigger asChild>
               <Button
