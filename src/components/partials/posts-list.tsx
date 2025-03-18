@@ -1,65 +1,102 @@
+import { Loading } from "@/components/loading";
 import PostListItem from "@/components/post-list-item";
+import { client } from "@/lib/api/client";
 import { firestore } from "@/lib/firebase";
+import AsyncValue from "@/lib/types/AsyncValue";
 import { Post, postSchema } from "@/lib/types/Post";
-import { collection, onSnapshot } from "firebase/firestore";
+import { mapError } from "@/lib/utils";
+import { collection, getDocs } from "firebase/firestore";
 import React, { useEffect, useState } from "react";
+import { toast } from "sonner";
+import { z } from "zod";
 
-const PostsList: React.FC = () => {
-  const [posts, setPosts] = useState<Post[]>([]);
+interface PostsListProps {
+  forYou: boolean;
+}
+
+const PostsList: React.FC<PostsListProps> = ({ forYou }) => {
+  const [posts, setPosts] = useState<AsyncValue<Post[]>>({ loaded: false });
 
   useEffect(() => {
-    const collectionRef = collection(firestore, "posts");
+    const fetchAllPosts = async () => {
+      const posts = await getDocs(collection(firestore, "posts"));
 
-    return onSnapshot(collectionRef, snapshot => {
-      if (snapshot.size === 0) {
-        localStorage.setItem("recentlyViewedPosts", "[]");
+      const result = z
+        .array(postSchema)
+        .safeParse(posts.docs.map(doc => ({ id: doc.id, ...doc.data() })));
+
+      if (!result.success) {
+        console.error(result.error.errors);
+        return [];
       }
 
-      snapshot.docChanges().forEach(change => {
-        const result = postSchema.safeParse({
-          id: change.doc.id,
-          ...change.doc.data(),
+      return result.data;
+    };
+
+    const fetchForYouPosts = async () => {
+      const res = await client["for-you"].$get();
+      const data: Post = await res.json();
+
+      const result = z.array(postSchema).safeParse(data);
+
+      if (!result.success) {
+        console.error(result.error.errors);
+        return [];
+      }
+
+      return result.data;
+    };
+
+    const fetchPosts = async () => {
+      let posts: Post[];
+
+      try {
+        if (forYou) {
+          posts = await fetchForYouPosts();
+          if (posts.length === 0) {
+            localStorage.setItem("recentlyViewedPosts", "[]");
+          }
+        } else {
+          posts = await fetchAllPosts();
+          if (posts.length === 0) {
+            localStorage.setItem("recentlyViewedPosts", "[]");
+          }
+        }
+
+        setPosts({
+          loaded: true,
+          data: posts,
         });
+      } catch (e) {
+        const message = mapError(e);
+        toast.error(message);
+      }
+    };
 
-        if (!result.success) {
-          console.error(result.error.errors);
-          return;
-        }
-
-        const post = result.data;
-
-        switch (change.type) {
-          case "added":
-            setPosts(posts => [...posts, post]);
-            break;
-          case "modified":
-            setPosts(posts => posts.map(p => (p.id === post.id ? post : p)));
-            break;
-          case "removed":
-            setPosts(posts => posts.filter(p => p.id !== post.id));
-            break;
-        }
-      });
-    });
-  }, []);
+    fetchPosts();
+  }, [forYou]);
 
   useEffect(() => {
-    if (posts.length === 0) return;
+    if (!posts.loaded || posts.data.length === 0) return;
 
     localStorage.setItem("recentlyViewedPosts", JSON.stringify(posts));
   }, [posts]);
 
   return (
     <ul className="flex flex-col gap-2 p-2">
-      {posts.length === 0 && (
+      {posts.loaded ? (
+        posts.data.map(post => (
+          <PostListItem
+            key={post.id}
+            post={post}
+          />
+        ))
+      ) : (
+        <Loading />
+      )}
+      {posts.loaded && posts.data.length === 0 && (
         <p className="text-muted-foreground">No posts found.</p>
       )}
-      {posts.map(post => (
-        <PostListItem
-          key={post.id}
-          post={post}
-        />
-      ))}
     </ul>
   );
 };
