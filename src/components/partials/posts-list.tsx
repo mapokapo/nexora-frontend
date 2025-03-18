@@ -11,6 +11,10 @@ const PostsList: React.FC = () => {
     const collectionRef = collection(firestore, "posts");
 
     return onSnapshot(collectionRef, snapshot => {
+      if (snapshot.size === 0) {
+        localStorage.setItem("recentlyViewedPosts", "[]");
+      }
+
       snapshot.docChanges().forEach(change => {
         const result = postSchema.safeParse({
           id: change.doc.id,
@@ -38,6 +42,12 @@ const PostsList: React.FC = () => {
       });
     });
   }, []);
+
+  useEffect(() => {
+    if (posts.length === 0) return;
+
+    localStorage.setItem("recentlyViewedPosts", JSON.stringify(posts));
+  }, [posts]);
 
   return (
     <ul className="flex flex-col gap-2 p-2">
