@@ -160,7 +160,7 @@ const LoginComponent: React.FC<Props> = ({
           </CardFooter>
           <div className="relative mx-auto w-11/12">
             <Separator />
-            <span className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 cursor-default bg-background px-2 uppercase text-muted-foreground/40">
+            <span className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 cursor-default bg-card px-2 uppercase text-muted-foreground/40">
               or
             </span>
           </div>
@@ -170,7 +170,7 @@ const LoginComponent: React.FC<Props> = ({
               variant="secondary"
               disabled={form.formState.isSubmitting}
               onClick={onSignInWithGoogle}>
-              <span className="ml-2">Sign in with Google</span>
+              <span>Sign in with Google</span>
             </Button>
           </div>
         </Card>
