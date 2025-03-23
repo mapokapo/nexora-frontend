@@ -35,7 +35,7 @@ const PostsList: React.FC<PostsListProps> = ({ forYou }) => {
 
     const fetchForYouPosts = async () => {
       const res = await client["for-you"].$get();
-      const data: Post = await res.json();
+      const data = await res.json();
 
       const result = z.array(postSchema).safeParse(data);
 
