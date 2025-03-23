@@ -53,7 +53,7 @@ const ProfileDropdown: React.FC = () => {
             </Link>
           </DropdownMenuItem>
           <DropdownMenuItem asChild>
-            <AlertDialogTrigger className="flex w-full cursor-pointer items-center justify-between">
+            <AlertDialogTrigger className="flex w-full cursor-pointer items-center justify-between text-red-500">
               <span>Log out</span>
               <LogOut size={24} />
             </AlertDialogTrigger>
