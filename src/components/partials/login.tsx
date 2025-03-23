@@ -24,7 +24,8 @@ import {
 } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Info } from "lucide-react";
+import { Eye, EyeClosed, Info } from "lucide-react";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { Link } from "react-router";
 import { z } from "zod";
@@ -45,6 +46,8 @@ const LoginComponent: React.FC<Props> = ({
   onSignInWithGoogle,
   actionError,
 }) => {
+  const [passwordVisible, setPasswordVisible] = useState(false);
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -114,13 +117,28 @@ const LoginComponent: React.FC<Props> = ({
                         </Tooltip>
                       </TooltipProvider>
                     </FormLabel>
-                    <FormControl>
-                      <Input
-                        placeholder="Password"
-                        disabled={form.formState.isSubmitting}
-                        {...field}
-                      />
-                    </FormControl>
+                    <div className="relative flex">
+                      <FormControl>
+                        <Input
+                          placeholder="Password"
+                          type={passwordVisible ? "text" : "password"}
+                          disabled={form.formState.isSubmitting}
+                          {...field}
+                        />
+                      </FormControl>
+                      <Button
+                        className="absolute right-0"
+                        size="icon"
+                        variant="ghost"
+                        type="button"
+                        onClick={() => setPasswordVisible(!passwordVisible)}>
+                        {passwordVisible ? (
+                          <EyeClosed size={16} />
+                        ) : (
+                          <Eye size={16} />
+                        )}
+                      </Button>
+                    </div>
                     <FormMessage />
                   </FormItem>
                 )}
