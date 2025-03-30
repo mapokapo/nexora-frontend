@@ -62,10 +62,7 @@ const CommentListItem: React.FC<CommentListItemProps> = ({ comment }) => {
     <li className="flex items-center gap-2 rounded-lg border border-border p-2 hover:bg-muted">
       <div className="h-6 w-6">
         {commenter.loaded ? (
-          <ProfilePicture
-            userName={commenter.data.name}
-            photoURL={null}
-          />
+          <ProfilePicture profile={commenter.data} />
         ) : (
           <Loading />
         )}

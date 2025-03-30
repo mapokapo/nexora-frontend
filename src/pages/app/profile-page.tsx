@@ -73,8 +73,7 @@ const ProfilePage: React.FC = () => {
               <div className="flex items-center gap-4">
                 <div className="h-12 w-12">
                   <ProfilePicture
-                    photoURL={isOwnPage ? user.photoURL : null}
-                    userName={profilePageData.data.name}
+                    profile={isOwnPage ? profile : profilePageData.data}
                   />
                 </div>
                 <h1 className="text-2xl font-bold">

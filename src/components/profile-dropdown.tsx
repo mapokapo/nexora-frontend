@@ -19,13 +19,11 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { auth } from "@/lib/firebase";
 import { useAppProfile } from "@/lib/hooks/use-profile";
-import { useAppUser } from "@/lib/hooks/use-user";
 import { signOut } from "firebase/auth";
 import { ArrowUpRight, LogOut } from "lucide-react";
 import { Link } from "react-router";
 
 const ProfileDropdown: React.FC = () => {
-  const user = useAppUser();
   const profile = useAppProfile();
 
   return (
@@ -36,10 +34,7 @@ const ProfileDropdown: React.FC = () => {
             className="rounded-full !bg-transparent"
             variant="ghost"
             size="icon">
-            <ProfilePicture
-              userName={user.displayName ?? profile.name}
-              photoURL={user.photoURL}
-            />
+            <ProfilePicture profile={profile} />
             <span className="sr-only">Open profile options</span>
           </Button>
         </DropdownMenuTrigger>

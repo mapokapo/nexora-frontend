@@ -1,19 +1,16 @@
+import { Profile } from "@/lib/types/Profile";
 import { Avatar, AvatarImage, AvatarFallback } from "@radix-ui/react-avatar";
 
 interface ProfilePictureProps {
-  photoURL: string | null;
-  userName: string;
+  profile: Profile;
 }
 
-const ProfilePicture: React.FC<ProfilePictureProps> = ({
-  photoURL,
-  userName,
-}) => {
+const ProfilePicture: React.FC<ProfilePictureProps> = ({ profile }) => {
   return (
     <Avatar className="flex aspect-square h-full w-full items-center justify-center rounded-full bg-secondary transition-opacity hover:opacity-75">
-      <AvatarImage src={photoURL ?? undefined} />
+      <AvatarImage src={profile.photoURL} />
       <AvatarFallback className="font-bold text-secondary-foreground">
-        {userName
+        {profile.name
           .split(" ")
           .map(name => name[0])
           .join("")}
