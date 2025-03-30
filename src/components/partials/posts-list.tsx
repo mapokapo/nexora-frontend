@@ -5,16 +5,17 @@ import { firestore } from "@/lib/firebase";
 import AsyncValue from "@/lib/types/AsyncValue";
 import { Post, postSchema } from "@/lib/types/Post";
 import { mapError } from "@/lib/utils";
-import { collection, getDocs } from "firebase/firestore";
+import { collection, getDocs, query, where } from "firebase/firestore";
 import React, { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { z } from "zod";
 
 interface PostsListProps {
+  userId?: string;
   forYou: boolean;
 }
 
-const PostsList: React.FC<PostsListProps> = ({ forYou }) => {
+const PostsList: React.FC<PostsListProps> = ({ userId, forYou }) => {
   const [posts, setPosts] = useState<AsyncValue<Post[]>>({ loaded: false });
 
   useEffect(() => {
@@ -47,19 +48,43 @@ const PostsList: React.FC<PostsListProps> = ({ forYou }) => {
       return result.data;
     };
 
+    const fetchUserPosts = async (userId: string) => {
+      const posts = await getDocs(
+        query(collection(firestore, "posts"), where("userId", "==", userId))
+      );
+
+      const result = z
+        .array(postSchema)
+        .safeParse(posts.docs.map(doc => ({ id: doc.id, ...doc.data() })));
+
+      if (!result.success) {
+        console.error(result.error.errors);
+        return [];
+      }
+
+      return result.data;
+    };
+
     const fetchPosts = async () => {
       let posts: Post[];
 
       try {
-        if (forYou) {
-          posts = await fetchForYouPosts();
+        if (userId !== undefined) {
+          posts = await fetchUserPosts(userId);
           if (posts.length === 0) {
             localStorage.setItem("recentlyViewedPosts", "[]");
           }
         } else {
-          posts = await fetchAllPosts();
-          if (posts.length === 0) {
-            localStorage.setItem("recentlyViewedPosts", "[]");
+          if (forYou) {
+            posts = await fetchForYouPosts();
+            if (posts.length === 0) {
+              localStorage.setItem("recentlyViewedPosts", "[]");
+            }
+          } else {
+            posts = await fetchAllPosts();
+            if (posts.length === 0) {
+              localStorage.setItem("recentlyViewedPosts", "[]");
+            }
           }
         }
 
@@ -74,7 +99,7 @@ const PostsList: React.FC<PostsListProps> = ({ forYou }) => {
     };
 
     fetchPosts();
-  }, [forYou]);
+  }, [forYou, userId]);
 
   useEffect(() => {
     if (!posts.loaded || posts.data.length === 0) return;
