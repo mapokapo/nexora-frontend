@@ -6,7 +6,7 @@ import { firestore } from "@/lib/firebase";
 import AsyncResult from "@/lib/types/AsyncResult";
 import { Profile, profileSchema } from "@/lib/types/Profile";
 import { mapError } from "@/lib/utils";
-import { onSnapshot, doc } from "firebase/firestore";
+import { onSnapshot, doc, updateDoc } from "firebase/firestore";
 import { useState, useEffect, useMemo } from "react";
 import { toast } from "sonner";
 
@@ -65,6 +65,21 @@ export const ProfileProvider: React.FC<ProfileProviderProps> = ({
       }
     );
   }, [user]);
+
+  useEffect(() => {
+    if (
+      user &&
+      user.photoURL !== null &&
+      profile.loaded &&
+      "data" in profile &&
+      profile.data !== null &&
+      profile.data.photoURL === undefined
+    ) {
+      updateDoc(doc(firestore, "profiles", user.uid), {
+        photoURL: user.photoURL,
+      });
+    }
+  }, [user, profile]);
 
   const value = useMemo(() => ({ profile, setProfile }), [profile, setProfile]);
 
