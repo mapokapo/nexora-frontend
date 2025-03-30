@@ -1,6 +1,7 @@
 import CreateProfileComponent from "@/components/partials/create-profile";
 import { firestore } from "@/lib/firebase";
 import { useAppUser } from "@/lib/hooks/use-user";
+import { Profile } from "@/lib/types/Profile";
 import { mapError } from "@/lib/utils";
 import { doc, setDoc } from "firebase/firestore";
 import { useState } from "react";
@@ -14,7 +15,13 @@ const CreateProfilePage: React.FC = () => {
     try {
       await setDoc(doc(firestore, "profiles", user.uid), {
         name,
-      });
+        settings: {
+          allowCommentsFrom: "everyone",
+          allowMessagesFrom: "everyone",
+          allowFriendRequestsFrom: "everyone",
+          allowProfileVisitsFrom: "everyone",
+        },
+      } satisfies Profile);
     } catch (error) {
       const message = mapError(error);
       setActionError(message);
