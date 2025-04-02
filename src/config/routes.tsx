@@ -21,6 +21,7 @@ import { Navigate, RouteObject } from "react-router";
  * - `UserGuardLayout` - A layout that checks if the user is authenticated. If not, it redirects them to the login page, otherwise it renders the children.
  * - `NoProfileGuardLayout` - A layout that checks if the user DOESN'T have a profile. If they do, it redirects them to the home page, otherwise it renders the children. This is used for onboarding flows immediately after a user registers themselves (eg. "user unauthenticated" -> <SHOW LOGIN/REGISTER PAGE> -> "user logged in, but doesn't have a profile" -> <SHOW CREATE PROFILE SCREEN> -> "user is both logged in and has a profile" -> <SHOW HOME PAGE>).
  * - `ProfileGuardLayout` - A layout that checks if the user has a profile. If they don't, it redirects to the "create profile" page, otherwise it renders the children.
+ * - `AppLayout` - A UI-only layout which lays out the main app structure, composed of the sidebar, friends list, and main content.
  *
  * Additionally, the hooks provided in `@/lib/context` (`useUser`, `useProfile`) depend on these guards, which also function as fetchers:
  * - `useUser` - returns a potentially null user. This hook can be used anywhere within the `UserProvider`, no matter if the user is actually logged in. The `UserProvider` is a top-level provider defined in `RootLayout`, so this means `useUser` will be available everywhere.
