@@ -7,7 +7,7 @@ import { useAppUser } from "@/lib/hooks/use-user";
 import AsyncValue from "@/lib/types/AsyncValue";
 import { Profile, profileSchema } from "@/lib/types/Profile";
 import { mapError } from "@/lib/utils";
-import { doc, onSnapshot, updateDoc } from "firebase/firestore";
+import { doc, onSnapshot } from "firebase/firestore";
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router";
 import { toast } from "sonner";
@@ -54,65 +54,16 @@ const ProfilePage: React.FC = () => {
     );
   }, [id, isOwnPage]);
 
-  const handleUpdateSettings = (key: string, newValue: string) => {
-    if (!profilePageData.loaded) return;
-
-    const updatedSettings = {
-      ...profilePageData.data.settings,
-      [key]: newValue,
-    };
-
-    setProfilePageData(prev =>
-      prev.loaded
-        ? { ...prev, data: { ...prev.data, settings: updatedSettings } }
-        : prev
-    );
-
-    toast.info("You have changes pending", {
-      action: {
-        label: "Save",
-        onClick: () => updateProfileData(updatedSettings),
-      },
-      duration: Infinity,
-      closeButton: true,
-      onDismiss: revertProfileData,
-    });
-  };
-
-  const updateProfileData = async (updatedSettings: Profile["settings"]) => {
-    try {
-      await updateDoc(doc(firestore, "profiles", user.uid), {
-        settings: updatedSettings,
-      });
-      toast.success("Profile updated successfully");
-    } catch (error) {
-      toast.error(mapError(error));
-    }
-  };
-
-  const revertProfileData = () => {
-    if (!profilePageData.loaded) {
-      return;
-    }
-
-    setProfilePageData({
-      loaded: true,
-      data: structuredClone(profile),
-    });
-    toast.dismiss();
-  };
-
   if (!profilePageData.loaded) {
     return <Loading />;
   }
 
   return (
     <>
-      <ProfileHeader
-        profile={profilePageData.data}
-        isOwnPage={isOwnPage}
-        onUpdateSettings={handleUpdateSettings}
-      />
+      <ProfileHeader profile={profilePageData.data} />
+      <h2 className="m-2 mt-4 text-lg font-bold">
+        {profilePageData.data.name}'s Posts
+      </h2>
       <PostsList
         forYou={false}
         userId={isOwnPage ? user.uid : id}

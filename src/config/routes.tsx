@@ -7,6 +7,7 @@ import UserGuardLayout from "@/layouts/user-guard-layout";
 import ForYouPage from "@/pages/app/for-you-page";
 import HomePage from "@/pages/app/home-page";
 import ProfilePage from "@/pages/app/profile-page";
+import SettingsPage from "@/pages/app/settings-page";
 import ForgotPasswordPage from "@/pages/auth/forgot-password-page";
 import LoginPage from "@/pages/auth/login-page";
 import RegisterPage from "@/pages/auth/register-page";
@@ -76,6 +77,10 @@ export const routes: RouteObject[] = [
                   {
                     path: "/app/profile/:id",
                     element: <ProfilePage />,
+                  },
+                  {
+                    path: "/app/settings",
+                    element: <SettingsPage />,
                   },
                 ],
               },
