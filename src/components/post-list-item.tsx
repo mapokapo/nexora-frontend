@@ -60,7 +60,8 @@ const PostListItem: React.FC<PostListItemProps> = ({ post }) => {
   const [numLikes, setNumLikes] = useState(0);
   const [likeLoading, setLikeLoading] = useState(false);
 
-  const [postCreator, setPostCreator] = useState<AsyncValue<Profile>>({
+  // postCreator is null in case the post creator's "allowProfileVisitsFrom" setting disallows the current user to view their profile
+  const [postCreator, setPostCreator] = useState<AsyncValue<Profile | null>>({
     loaded: false,
   });
 
@@ -82,22 +83,29 @@ const PostListItem: React.FC<PostListItemProps> = ({ post }) => {
   }, [post.id, user.uid]);
 
   useEffect(() => {
-    return onSnapshot(doc(firestore, "profiles", post.userId), snapshot => {
-      const result = profileSchema.safeParse({
-        id: snapshot.id,
-        ...snapshot.data(),
-      });
+    return onSnapshot(
+      doc(firestore, "profiles", post.userId),
+      snapshot => {
+        const result = profileSchema.safeParse({
+          id: snapshot.id,
+          ...snapshot.data(),
+        });
 
-      if (!result.success) {
-        console.error(result.error.errors);
-        return;
+        if (!result.success) {
+          console.error(result.error.errors);
+          return;
+        }
+
+        setPostCreator({
+          loaded: true,
+          data: result.data,
+        });
+      },
+      error => {
+        console.error("Error fetching post creator:", error);
+        setPostCreator({ loaded: true, data: null });
       }
-
-      setPostCreator({
-        loaded: true,
-        data: result.data,
-      });
-    });
+    );
   }, [post.userId]);
 
   const likePost = async () => {
@@ -175,11 +183,15 @@ const PostListItem: React.FC<PostListItemProps> = ({ post }) => {
           className="mb-1 ml-1 h-auto w-min p-0 hover:bg-transparent"
           variant="link">
           {postCreator.loaded ? (
-            <Link
-              className="text-muted-foreground"
-              to={`/app/profile/${post.userId}`}>
-              {postCreator.data.name}
-            </Link>
+            postCreator.data === null ? (
+              <span className="text-muted-foreground">Unknown User</span>
+            ) : (
+              <Link
+                className="text-muted-foreground"
+                to={`/app/profile/${post.userId}`}>
+                {postCreator.data.name}
+              </Link>
+            )
           ) : (
             <span className="animate-pulse text-sm text-muted-foreground">
               Loading user...
