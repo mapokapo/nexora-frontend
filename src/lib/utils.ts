@@ -66,3 +66,13 @@ export function getRelativeTime(d1: Date, d2 = new Date()) {
 export const firestoreTimestampSchema = z.custom<Timestamp>(data => {
   return data instanceof Timestamp;
 });
+
+export const camelCaseToTitleCase = (str: string) => {
+  return str
+    .replace(/([a-z])([A-Z])/g, "$1 $2")
+    .replace(/([A-Z])([A-Z][a-z])/g, "$1 $2")
+    .replace(/([0-9]+)([a-zA-Z])/g, "$1 $2")
+    .replace(/([a-zA-Z])([0-9]+)/g, "$1 $2")
+    .replace(/_/g, " ")
+    .replace(/\b\w/g, char => char.toUpperCase());
+};
