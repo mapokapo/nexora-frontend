@@ -1,8 +1,6 @@
 import { Loading } from "@/components/loading";
-import FriendsList from "@/components/partials/friends-list";
 import PostsList from "@/components/partials/posts-list";
 import ProfileHeader from "@/components/partials/profile-header";
-import Sidebar from "@/components/partials/sidebar";
 import { firestore } from "@/lib/firebase";
 import { useAppProfile } from "@/lib/hooks/use-profile";
 import { useAppUser } from "@/lib/hooks/use-user";
@@ -104,32 +102,22 @@ const ProfilePage: React.FC = () => {
     toast.dismiss();
   };
 
+  if (!profilePageData.loaded) {
+    return <Loading />;
+  }
+
   return (
-    <div className="flex h-full min-h-full w-full flex-1 items-stretch justify-center">
-      <div className="hidden sm:block">
-        <Sidebar />
-      </div>
-      <main className="flex w-full min-w-[400px] flex-col p-2 md:min-w-[500px]">
-        {profilePageData.loaded ? (
-          <div className="flex flex-col">
-            <ProfileHeader
-              profile={profilePageData.data}
-              isOwnPage={isOwnPage}
-              onUpdateSettings={handleUpdateSettings}
-            />
-            <PostsList
-              forYou={false}
-              userId={isOwnPage ? user.uid : id}
-            />
-          </div>
-        ) : (
-          <Loading />
-        )}
-      </main>
-      <div className="hidden lg:block">
-        <FriendsList />
-      </div>
-    </div>
+    <>
+      <ProfileHeader
+        profile={profilePageData.data}
+        isOwnPage={isOwnPage}
+        onUpdateSettings={handleUpdateSettings}
+      />
+      <PostsList
+        forYou={false}
+        userId={isOwnPage ? user.uid : id}
+      />
+    </>
   );
 };
 

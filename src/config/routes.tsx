@@ -1,3 +1,4 @@
+import AppLayout from "@/layouts/app-layout";
 import AuthLayout from "@/layouts/auth-layout";
 import NoProfileGuardLayout from "@/layouts/no-profile-guard-layout";
 import ProfileGuardLayout from "@/layouts/profile-guard-layout";
@@ -56,20 +57,26 @@ export const routes: RouteObject[] = [
             element: <ProfileGuardLayout />,
             children: [
               {
-                path: "/app/home",
-                element: <HomePage />,
-              },
-              {
-                path: "/app/for-you",
-                element: <ForYouPage />,
-              },
-              {
-                path: "/app/profile",
-                element: <ProfilePage />,
-              },
-              {
-                path: "/app/profile/:id",
-                element: <ProfilePage />,
+                path: "/app",
+                element: <AppLayout />,
+                children: [
+                  {
+                    path: "/app/home",
+                    element: <HomePage />,
+                  },
+                  {
+                    path: "/app/for-you",
+                    element: <ForYouPage />,
+                  },
+                  {
+                    path: "/app/profile",
+                    element: <ProfilePage />,
+                  },
+                  {
+                    path: "/app/profile/:id",
+                    element: <ProfilePage />,
+                  },
+                ],
               },
               {
                 path: "",
