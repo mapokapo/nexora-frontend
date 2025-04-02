@@ -51,7 +51,9 @@ const ForgotPasswordPage: React.FC = () => {
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
       await sendPasswordResetEmail(auth, values.email);
+
       toast.success("Password reset email sent. Check your inbox.");
+      setActionError(null);
     } catch (error) {
       const message = mapError(error);
       setActionError(message);

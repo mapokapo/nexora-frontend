@@ -15,6 +15,8 @@ const LoginPage: React.FC = () => {
   const onSubmit = async (email: string, password: string) => {
     try {
       await signInWithEmailAndPassword(auth, email, password);
+
+      setActionError(null);
     } catch (error) {
       const message = mapError(error);
       setActionError(message);
@@ -25,6 +27,8 @@ const LoginPage: React.FC = () => {
   const onSignInWithGoogle = async () => {
     try {
       await signInWithPopup(auth, new GoogleAuthProvider());
+
+      setActionError(null);
     } catch (error) {
       const message = mapError(error);
       setActionError(message);

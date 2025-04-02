@@ -17,6 +17,8 @@ const RegisterPage: React.FC = () => {
   }) => {
     try {
       await createUserWithEmailAndPassword(auth, email, password);
+
+      setActionError(null);
     } catch (error) {
       const message = mapError(error);
       setActionError(message);

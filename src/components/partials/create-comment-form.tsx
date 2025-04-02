@@ -49,6 +49,7 @@ const CreateCommentForm: React.FC<CreateCommentFormProps> = ({ post }) => {
       });
 
       form.reset();
+      setActionError(null);
     } catch (error) {
       const message = mapError(error);
       setActionError(message);

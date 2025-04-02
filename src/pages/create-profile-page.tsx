@@ -22,6 +22,9 @@ const CreateProfilePage: React.FC = () => {
           allowProfileVisitsFrom: "everyone",
         },
       } satisfies Profile);
+
+      toast.success("Profile created successfully");
+      setActionError(null);
     } catch (error) {
       const message = mapError(error);
       setActionError(message);

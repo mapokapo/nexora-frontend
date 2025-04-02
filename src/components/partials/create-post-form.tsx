@@ -60,6 +60,7 @@ const CreatePostForm: React.FC = () => {
 
       form.reset();
       setIsOpened(false);
+      setActionError(null);
     } catch (error) {
       const message = mapError(error);
       setActionError(message);
