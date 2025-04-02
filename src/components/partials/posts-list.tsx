@@ -5,7 +5,13 @@ import { firestore } from "@/lib/firebase";
 import AsyncValue from "@/lib/types/AsyncValue";
 import { Post, postSchema } from "@/lib/types/Post";
 import { mapError } from "@/lib/utils";
-import { collection, getDocs, query, where } from "firebase/firestore";
+import {
+  collection,
+  onSnapshot,
+  query,
+  QuerySnapshot,
+  where,
+} from "firebase/firestore";
 import React, { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { z } from "zod";
@@ -19,92 +25,78 @@ const PostsList: React.FC<PostsListProps> = ({ userId, forYou }) => {
   const [posts, setPosts] = useState<AsyncValue<Post[]>>({ loaded: false });
 
   useEffect(() => {
-    const fetchAllPosts = async () => {
-      const posts = await getDocs(collection(firestore, "posts"));
+    let unsubscribe: (() => void) | undefined;
 
-      const result = z
-        .array(postSchema)
-        .safeParse(posts.docs.map(doc => ({ id: doc.id, ...doc.data() })));
+    const handleSnapshot = (snapshot: QuerySnapshot) => {
+      const posts = snapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
 
-      if (!result.success) {
-        console.error(result.error.errors);
-        return [];
-      }
-
-      return result.data;
-    };
-
-    const fetchForYouPosts = async () => {
-      const res = await client["for-you"].$get();
-      const data = await res.json();
-
-      const result = z.array(postSchema).safeParse(data);
+      const result = z.array(postSchema).safeParse(posts);
 
       if (!result.success) {
         console.error(result.error.errors);
-        return [];
+        return;
       }
 
-      return result.data;
+      setPosts({
+        loaded: true,
+        data: result.data,
+      });
     };
 
-    const fetchUserPosts = async (userId: string) => {
-      const posts = await getDocs(
-        query(collection(firestore, "posts"), where("userId", "==", userId))
+    const handleError = (error: unknown) => {
+      console.error("Error fetching posts:", error);
+      setPosts({ loaded: false });
+      toast.error(mapError(error));
+    };
+
+    if (userId !== undefined) {
+      const userPostsQuery = query(
+        collection(firestore, "posts"),
+        where("userId", "==", userId)
       );
+      unsubscribe = onSnapshot(userPostsQuery, handleSnapshot, handleError);
+    } else if (!forYou) {
+      const allPostsQuery = collection(firestore, "posts");
+      unsubscribe = onSnapshot(allPostsQuery, handleSnapshot, handleError);
+    } else {
+      const fetchForYouPosts = async () => {
+        try {
+          const res = await client["for-you"].$get();
+          const data = await res.json();
 
-      const result = z
-        .array(postSchema)
-        .safeParse(posts.docs.map(doc => ({ id: doc.id, ...doc.data() })));
+          const result = z.array(postSchema).safeParse(data);
 
-      if (!result.success) {
-        console.error(result.error.errors);
-        return [];
-      }
-
-      return result.data;
-    };
-
-    const fetchPosts = async () => {
-      let posts: Post[];
-
-      try {
-        if (userId !== undefined) {
-          posts = await fetchUserPosts(userId);
-          if (posts.length === 0) {
-            localStorage.setItem("recentlyViewedPosts", "[]");
+          if (!result.success) {
+            console.error(result.error.errors);
+            setPosts({ loaded: true, data: [] });
+            return;
           }
-        } else {
-          if (forYou) {
-            posts = await fetchForYouPosts();
-            if (posts.length === 0) {
-              localStorage.setItem("recentlyViewedPosts", "[]");
-            }
-          } else {
-            posts = await fetchAllPosts();
-            if (posts.length === 0) {
-              localStorage.setItem("recentlyViewedPosts", "[]");
-            }
-          }
+
+          setPosts({ loaded: true, data: result.data });
+        } catch (error) {
+          const message = mapError(error);
+          toast.error(message);
+          setPosts({ loaded: true, data: [] });
         }
+      };
 
-        setPosts({
-          loaded: true,
-          data: posts,
-        });
-      } catch (e) {
-        const message = mapError(e);
-        toast.error(message);
+      fetchForYouPosts();
+    }
+
+    return () => {
+      if (unsubscribe) {
+        unsubscribe();
       }
     };
-
-    fetchPosts();
   }, [forYou, userId]);
 
   useEffect(() => {
     if (!posts.loaded || posts.data.length === 0) return;
 
-    localStorage.setItem("recentlyViewedPosts", JSON.stringify(posts));
+    localStorage.setItem("recentlyViewedPosts", JSON.stringify(posts.data));
   }, [posts]);
 
   return (
