@@ -58,25 +58,27 @@ const Sidebar: React.FC = () => {
         <span className="text-lg">Settings</span>
       </Link>
       {recentlyViewedPosts.length > 0 && (
-        <div className="flex flex-col items-center gap-4">
+        <div className="flex flex-col gap-4">
           <Separator className="bg-muted" />
-          <span className="text-lg font-semibold">Recently viewed</span>
+          <span className="ml-2 text-lg font-semibold">Recently viewed</span>
         </div>
       )}
-      {recentlyViewedPosts.map(post => (
-        <Dialog key={post.id}>
-          <DialogTrigger className="flex w-full cursor-pointer items-center gap-2 rounded-lg p-2 text-lg hover:bg-muted">
-            {post.title.slice(0, 10)}
-          </DialogTrigger>
-          <DialogContent className="bg-card">
-            <DialogTitle className="sr-only">{post.title}</DialogTitle>
-            <DialogDescription className="sr-only">
-              {post.content}
-            </DialogDescription>
-            <PostListItem post={post} />
-          </DialogContent>
-        </Dialog>
-      ))}
+      <div className="flex flex-col gap-2">
+        {recentlyViewedPosts.map(post => (
+          <Dialog key={post.id}>
+            <DialogTrigger className="flex w-full cursor-pointer items-center gap-2 rounded-lg px-2 py-1 text-lg hover:bg-muted">
+              {post.title.slice(0, 20)}
+            </DialogTrigger>
+            <DialogContent className="bg-card">
+              <DialogTitle className="sr-only">{post.title}</DialogTitle>
+              <DialogDescription className="sr-only">
+                {post.content}
+              </DialogDescription>
+              <PostListItem post={post} />
+            </DialogContent>
+          </Dialog>
+        ))}
+      </div>
     </aside>
   );
 };
