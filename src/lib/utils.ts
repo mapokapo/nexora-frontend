@@ -28,6 +28,8 @@ export function mapError(error: unknown) {
         return "Račun s tim podacima ne postoji.";
       case "auth/email-already-in-use":
         return "Email adresa je već u upotrebi.";
+      case "auth/too-many-requests":
+        return "Previše pokušaja prijave. Molimo pokušajte kasnije.";
       default:
         return error.message;
     }
