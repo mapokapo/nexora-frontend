@@ -94,7 +94,7 @@ const FriendsList: React.FC = () => {
   };
 
   return (
-    <aside className="sticky top-0 h-[75vh] min-w-56 justify-start space-y-4 overflow-y-auto border-l border-border bg-card p-4 xl:min-w-64">
+    <aside className="sticky top-0 max-h-[75vh] min-w-56 justify-start space-y-4 overflow-y-auto border-l border-border bg-card p-4 xl:min-w-64">
       <span className="ml-2 text-lg font-semibold">Friends</span>
       <div className="flex flex-col gap-2">
         {friendProfiles.map(friendProfile => (
