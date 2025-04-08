@@ -36,7 +36,10 @@ const ProfilePage: React.FC = () => {
       doc(firestore, "profiles", id),
       snapshot => {
         if (snapshot.exists()) {
-          const result = profileSchema.safeParse(snapshot.data());
+          const result = profileSchema.safeParse({
+            id: snapshot.id,
+            ...snapshot.data(),
+          });
 
           if (!result.success) {
             throw new Error("Profile data is corrupted");

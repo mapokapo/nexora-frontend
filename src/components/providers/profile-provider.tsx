@@ -31,7 +31,10 @@ export const ProfileProvider: React.FC<ProfileProviderProps> = ({
       doc(firestore, "profiles", user.uid),
       snapshot => {
         if (snapshot.exists()) {
-          const result = profileSchema.safeParse(snapshot.data());
+          const result = profileSchema.safeParse({
+            id: snapshot.id,
+            ...snapshot.data(),
+          });
 
           if (!result.success) {
             const message = "Profile data is corrupted";
