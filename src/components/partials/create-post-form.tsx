@@ -21,7 +21,7 @@ import { useAppUser } from "@/lib/hooks/use-user";
 import { cn, mapError } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { TagInput } from "emblor";
-import { addDoc, collection } from "firebase/firestore";
+import { addDoc, collection, Timestamp } from "firebase/firestore";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
@@ -54,6 +54,8 @@ const CreatePostForm: React.FC = () => {
         content: values.content.trim(),
         tags: values.tags,
         userId: user.uid,
+        createdAt: Timestamp.now(),
+        updatedAt: Timestamp.now(),
       });
 
       form.reset();
