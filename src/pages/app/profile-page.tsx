@@ -4,7 +4,7 @@ import ProfileHeader from "@/components/partials/profile-header";
 import { firestore } from "@/lib/firebase";
 import { useAppProfile } from "@/lib/hooks/use-profile";
 import { useAppUser } from "@/lib/hooks/use-user";
-import AsyncValue from "@/lib/types/AsyncValue";
+import AsyncResult from "@/lib/types/AsyncResult";
 import { Profile, profileSchema } from "@/lib/types/Profile";
 import { mapError } from "@/lib/utils";
 import { doc, onSnapshot } from "firebase/firestore";
@@ -18,7 +18,9 @@ const ProfilePage: React.FC = () => {
   const profile = useAppProfile();
   const isOwnPage = id === user.uid || id === undefined;
 
-  const [profilePageData, setProfilePageData] = useState<AsyncValue<Profile>>(
+  const [profilePageData, setProfilePageData] = useState<
+    AsyncResult<Profile, Error>
+  >(
     isOwnPage
       ? {
           loaded: true,
@@ -53,12 +55,29 @@ const ProfilePage: React.FC = () => {
           throw new Error("Profile not found");
         }
       },
-      error => toast.error(mapError(error))
+      error => {
+        toast.error(mapError(error));
+
+        if (error.code === "permission-denied") {
+          setProfilePageData({
+            loaded: true,
+            error: new Error("This profile is private"),
+          });
+        }
+      }
     );
   }, [id, isOwnPage]);
 
   if (!profilePageData.loaded) {
     return <Loading />;
+  }
+
+  if ("error" in profilePageData) {
+    return (
+      <div className="flex h-full flex-col items-center justify-center">
+        <h1 className="text-2xl font-bold">{profilePageData.error.message}</h1>
+      </div>
+    );
   }
 
   return (
