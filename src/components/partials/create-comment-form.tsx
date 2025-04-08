@@ -12,7 +12,7 @@ import { useAppUser } from "@/lib/hooks/use-user";
 import { Post } from "@/lib/types/Post";
 import { cn, mapError } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { addDoc, collection, Timestamp } from "firebase/firestore";
+import { addDoc, collection } from "firebase/firestore";
 import { Send } from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
@@ -42,8 +42,6 @@ const CreateCommentForm: React.FC<CreateCommentFormProps> = ({ post }) => {
     try {
       await addDoc(collection(firestore, "comments"), {
         content: values.content.trim(),
-        createdAt: Timestamp.now(),
-        updatedAt: Timestamp.now(),
         userId: user.uid,
         postId: post.id,
       });
