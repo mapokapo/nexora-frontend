@@ -82,6 +82,8 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({ profile }) => {
     setLoading(false);
   };
 
+  const isSelf = user.uid === profile.id;
+
   const requestSent = friendRequests.loaded
     ? friendRequests.data.sentRequests.includes(profile.id)
     : false;
@@ -102,39 +104,41 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({ profile }) => {
         </div>
         <h1 className="text-2xl font-bold">{profile.name}</h1>
       </div>
-      <div className="flex gap-4">
-        {isFriend ? (
-          <Button
-            variant="destructive"
-            size="sm"
-            disabled={loading}
-            onClick={() => handleRemoveFriend(profile.id)}>
-            Remove Friend
-          </Button>
-        ) : requestSent ? (
-          <Button
-            variant="destructive"
-            size="sm"
-            disabled={loading}
-            onClick={() => handleCancelFriendRequest(profile.id)}>
-            Cancel Friend Request
-          </Button>
-        ) : requestReceived ? (
-          <Button
-            size="sm"
-            disabled={loading}
-            onClick={() => handleAcceptFriendRequest(profile.id)}>
-            Accept Friend Request
-          </Button>
-        ) : (
-          <Button
-            size="sm"
-            disabled={loading}
-            onClick={() => handleSendFriendRequest(profile.id)}>
-            Send Friend Request
-          </Button>
-        )}
-      </div>
+      {!isSelf && (
+        <div className="flex gap-4">
+          {isFriend ? (
+            <Button
+              variant="destructive"
+              size="sm"
+              disabled={loading}
+              onClick={() => handleRemoveFriend(profile.id)}>
+              Remove Friend
+            </Button>
+          ) : requestSent ? (
+            <Button
+              variant="destructive"
+              size="sm"
+              disabled={loading}
+              onClick={() => handleCancelFriendRequest(profile.id)}>
+              Cancel Friend Request
+            </Button>
+          ) : requestReceived ? (
+            <Button
+              size="sm"
+              disabled={loading}
+              onClick={() => handleAcceptFriendRequest(profile.id)}>
+              Accept Friend Request
+            </Button>
+          ) : (
+            <Button
+              size="sm"
+              disabled={loading}
+              onClick={() => handleSendFriendRequest(profile.id)}>
+              Send Friend Request
+            </Button>
+          )}
+        </div>
+      )}
     </div>
   );
 };
