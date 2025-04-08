@@ -34,26 +34,26 @@ const Sidebar: React.FC = () => {
     <aside className="sticky top-0 flex h-min min-w-56 flex-col justify-start gap-4 border-r border-border bg-card p-4 xl:min-w-64">
       <Link
         to="/app/home"
-        className="flex w-full cursor-pointer items-center gap-2 rounded-lg p-2 hover:bg-muted">
+        className="flex w-full cursor-pointer items-center gap-2 rounded-lg p-2 transition-colors hover:bg-muted">
         <Home />
         <span className="text-lg">Home</span>
       </Link>
       <Link
         to="/app/for-you"
-        className="flex w-full cursor-pointer items-center gap-2 rounded-lg p-2 hover:bg-muted">
+        className="flex w-full cursor-pointer items-center gap-2 rounded-lg p-2 transition-colors hover:bg-muted">
         <Sparkle />
         <span className="text-lg">For You</span>
       </Link>
       <Separator className="bg-muted" />
       <Link
         to="/app/profile"
-        className="flex w-full cursor-pointer items-center gap-2 rounded-lg p-2 hover:bg-muted">
+        className="flex w-full cursor-pointer items-center gap-2 rounded-lg p-2 transition-colors hover:bg-muted">
         <UserCircle2 />
         <span className="text-lg">Profile</span>
       </Link>
       <Link
         to="/app/settings"
-        className="flex w-full cursor-pointer items-center gap-2 rounded-lg p-2 hover:bg-muted">
+        className="flex w-full cursor-pointer items-center gap-2 rounded-lg p-2 transition-colors hover:bg-muted">
         <Settings />
         <span className="text-lg">Settings</span>
       </Link>
@@ -66,7 +66,7 @@ const Sidebar: React.FC = () => {
       <div className="flex flex-col gap-2">
         {recentlyViewedPosts.map(post => (
           <Dialog key={post.id}>
-            <DialogTrigger className="flex w-full cursor-pointer items-center gap-2 rounded-lg px-2 py-1 text-lg hover:bg-muted">
+            <DialogTrigger className="flex w-full cursor-pointer items-center gap-2 rounded-lg px-2 py-1 text-lg transition-colors hover:bg-muted">
               {post.title.slice(0, 20)}
             </DialogTrigger>
             <DialogContent className="bg-card">
