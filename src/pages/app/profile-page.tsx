@@ -20,19 +20,18 @@ const ProfilePage: React.FC = () => {
 
   const [profilePageData, setProfilePageData] = useState<
     AsyncResult<Profile, Error>
-  >(
-    isOwnPage
-      ? {
-          loaded: true,
-          data: structuredClone(profile),
-        }
-      : {
-          loaded: false,
-        }
-  );
+  >({
+    loaded: false,
+  });
 
   useEffect(() => {
-    if (isOwnPage) return;
+    if (isOwnPage) {
+      setProfilePageData({
+        loaded: true,
+        data: structuredClone(profile),
+      });
+      return;
+    }
 
     return onSnapshot(
       doc(firestore, "profiles", id),
@@ -66,7 +65,7 @@ const ProfilePage: React.FC = () => {
         }
       }
     );
-  }, [id, isOwnPage]);
+  }, [id, isOwnPage, profile]);
 
   if (!profilePageData.loaded) {
     return <Loading />;
