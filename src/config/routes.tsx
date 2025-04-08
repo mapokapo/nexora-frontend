@@ -82,6 +82,16 @@ export const routes: RouteObject[] = [
                     path: "/app/settings",
                     element: <SettingsPage />,
                   },
+
+                  {
+                    path: "",
+                    element: (
+                      <Navigate
+                        to="/app/home"
+                        replace
+                      />
+                    ),
+                  },
                 ],
               },
               {
