@@ -14,7 +14,6 @@ const AppLayout: React.FC = () => {
         </div>
         <main className="flex w-full min-w-[400px] flex-col p-2 md:min-w-[500px]">
           <Outlet />
-          <div className="h-[3000px] w-32 bg-red-500"></div>
         </main>
         <div className="relative hidden flex-1 lg:block">
           <FriendsList />
