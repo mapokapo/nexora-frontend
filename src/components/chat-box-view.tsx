@@ -6,7 +6,8 @@ import { useAppUser } from "@/lib/hooks/use-user";
 import AsyncValue from "@/lib/types/AsyncValue";
 import { Message, messageSchema } from "@/lib/types/Message";
 import { Profile, profileSchema } from "@/lib/types/Profile";
-import { cn, getRelativeTime } from "@/lib/utils";
+import { cn } from "@/lib/utils";
+import { format } from "date-fns";
 import {
   addDoc,
   and,
@@ -19,7 +20,7 @@ import {
   where,
 } from "firebase/firestore";
 import { ChevronDown, ChevronUp, Send } from "lucide-react";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Link } from "react-router";
 
 const ChatBoxView: React.FC = () => {
@@ -31,6 +32,7 @@ const ChatBoxView: React.FC = () => {
   });
   const [messages, setMessages] = useState<Message[]>([]);
   const [message, setMessage] = useState("");
+  const chatBoxMessageListRef = useRef<HTMLUListElement>(null);
 
   useEffect(() => {
     if (currentlyChattingUserId === null) {
@@ -115,6 +117,13 @@ const ChatBoxView: React.FC = () => {
     );
   }, [currentlyChattingUserId, user.uid]);
 
+  useEffect(() => {
+    if (chatBoxMessageListRef.current) {
+      chatBoxMessageListRef.current.scrollTop =
+        chatBoxMessageListRef.current.scrollHeight;
+    }
+  }, [messages]);
+
   const handleSendMessage = async () => {
     if (message.trim() === "") return;
 
@@ -167,7 +176,9 @@ const ChatBoxView: React.FC = () => {
                   No messages yet. Start chatting!
                 </span>
               ) : (
-                <ul className="flex flex-col gap-1 overflow-y-auto px-4 py-2">
+                <ul
+                  ref={chatBoxMessageListRef}
+                  className="flex flex-col gap-1 overflow-y-auto px-4 py-2">
                   {messages.map((message, i) => (
                     <li
                       key={message.id}
@@ -192,7 +203,7 @@ const ChatBoxView: React.FC = () => {
                           {message.content}
                         </p>
                         <span className="mt-auto whitespace-nowrap text-xs text-muted-foreground">
-                          {getRelativeTime(message.createdAt)}
+                          {format(message.createdAt, "HH:mm")}
                         </span>
                       </div>
                     </li>
