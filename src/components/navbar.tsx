@@ -1,4 +1,5 @@
 import NexoraLogo from "@/components/nexora-logo";
+import NotificationBell from "@/components/notification-bell";
 import ProfileDropdown from "@/components/profile-dropdown";
 import SearchBar from "@/components/searchbar";
 import ThemeModeToggle from "@/components/theme-mode-toggle";
@@ -17,6 +18,7 @@ const Navbar: React.FC = () => {
         onSearch={() => console.log("searching for", search)}
       />
       <div className="flex h-full items-center gap-3">
+        <NotificationBell />
         <ProfileDropdown />
         <ThemeModeToggle />
       </div>
