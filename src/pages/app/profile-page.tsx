@@ -1,3 +1,4 @@
+import FriendManagement from "@/components/friend-management";
 import { Loading } from "@/components/loading";
 import PostsList from "@/components/partials/posts-list";
 import ProfileHeader from "@/components/partials/profile-header";
@@ -60,7 +61,9 @@ const ProfilePage: React.FC = () => {
         if (error.code === "permission-denied") {
           setProfilePageData({
             loaded: true,
-            error: new Error("This profile is private"),
+            error: new Error("This profile is private", {
+              cause: error,
+            }),
           });
         }
       }
@@ -73,8 +76,14 @@ const ProfilePage: React.FC = () => {
 
   if ("error" in profilePageData) {
     return (
-      <div className="flex h-full flex-col items-center justify-center">
+      <div className="flex h-full flex-col items-center justify-center gap-4">
         <h1 className="text-2xl font-bold">{profilePageData.error.message}</h1>
+        {id !== undefined &&
+          profilePageData.error.cause instanceof Error &&
+          "code" in profilePageData.error.cause &&
+          profilePageData.error.cause.code === "permission-denied" && (
+            <FriendManagement userId={id} />
+          )}
       </div>
     );
   }

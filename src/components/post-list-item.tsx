@@ -183,15 +183,15 @@ const PostListItem: React.FC<PostListItemProps> = ({ post }) => {
           className="mb-1 ml-1 h-auto w-min p-0 hover:bg-transparent"
           variant="link">
           {postCreator.loaded ? (
-            postCreator.data === null ? (
-              <span className="text-muted-foreground">Unknown User</span>
-            ) : (
-              <Link
-                className="text-muted-foreground"
-                to={`/app/profile/${post.userId}`}>
-                {postCreator.data.name}
-              </Link>
-            )
+            <Link
+              className="text-muted-foreground"
+              to={`/app/profile/${post.userId}`}>
+              {postCreator.data === null ? (
+                <span className="text-muted-foreground">Unknown User</span>
+              ) : (
+                postCreator.data.name
+              )}
+            </Link>
           ) : (
             <span className="animate-pulse text-sm text-muted-foreground">
               Loading user...
