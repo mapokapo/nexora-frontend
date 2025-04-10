@@ -44,6 +44,11 @@ const FriendsList: React.FC = () => {
       return;
     }
 
+    if (friendRequests.data.allFriends.length === 0) {
+      setFriendProfiles([]);
+      return;
+    }
+
     const confirmedFriendIds = friendRequests.data.allFriends;
 
     const unsubscribeFns: (() => void)[] = [];
@@ -94,24 +99,26 @@ const FriendsList: React.FC = () => {
   };
 
   return (
-    <aside className="sticky top-0 max-h-[75vh] min-w-56 justify-start space-y-4 overflow-y-auto border-l border-border bg-card p-4 xl:min-w-64">
+    <aside className="sticky top-0 max-h-[75vh] min-w-56 justify-start space-y-4 overflow-y-auto border-b border-l border-border bg-card p-4 xl:min-w-64">
       <span className="ml-2 text-lg font-semibold">Friends</span>
-      <div className="flex flex-col gap-2">
-        {friendProfiles.map(friendProfile => (
-          <Button
-            key={friendProfile.id}
-            className="flex w-full cursor-pointer items-center justify-start gap-2 rounded-lg px-2 py-2 text-lg hover:bg-muted"
-            onClick={() => {
-              handleFriendClicked(friendProfile.id);
-            }}
-            variant="ghost">
-            <div className="h-6 w-6">
-              <ProfilePicture profile={friendProfile} />
-            </div>
-            <span>{friendProfile.name}</span>
-          </Button>
-        ))}
-      </div>
+      {friendProfiles.length > 0 && (
+        <div className="flex flex-col gap-2">
+          {friendProfiles.map(friendProfile => (
+            <Button
+              key={friendProfile.id}
+              className="flex w-full cursor-pointer items-center justify-start gap-2 rounded-lg px-2 py-2 text-lg hover:bg-muted"
+              onClick={() => {
+                handleFriendClicked(friendProfile.id);
+              }}
+              variant="ghost">
+              <div className="h-6 w-6">
+                <ProfilePicture profile={friendProfile} />
+              </div>
+              <span>{friendProfile.name}</span>
+            </Button>
+          ))}
+        </div>
+      )}
     </aside>
   );
 };
