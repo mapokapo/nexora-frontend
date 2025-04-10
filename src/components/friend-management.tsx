@@ -7,8 +7,10 @@ import {
   FriendRequests,
   friendRequestsSchema,
 } from "@/lib/types/FriendRequests";
+import { mapError } from "@/lib/utils";
 import { onSnapshot, doc } from "firebase/firestore";
 import React, { useEffect, useState } from "react";
+import { toast } from "sonner";
 
 interface FriendManagementProps {
   userId: string;
@@ -44,42 +46,57 @@ const FriendManagement: React.FC<FriendManagementProps> = ({ userId }) => {
   }, [user.uid]);
 
   const handleSendFriendRequest = async (userId: string) => {
-    setLoading(true);
     await client.friends.add.$post({
       json: {
         userId,
       },
     });
-    setLoading(false);
+    toast.success("Friend request sent");
   };
 
   const handleCancelFriendRequest = async (userId: string) => {
-    setLoading(true);
     await client.friends.cancel.$delete({
       json: {
         userId,
       },
     });
-    setLoading(false);
+    toast.success("Friend request cancelled");
   };
 
   const handleAcceptFriendRequest = async (userId: string) => {
-    setLoading(true);
     await client.friends.accept.$post({
       json: {
         userId,
       },
     });
-    setLoading(false);
+    toast.success("Friend request accepted");
+  };
+
+  const handleDeclineFriendRequest = async (userId: string) => {
+    await client.friends.decline.$post({
+      json: {
+        userId,
+      },
+    });
+    toast.success("Friend request declined");
   };
 
   const handleRemoveFriend = async (userId: string) => {
-    setLoading(true);
     await client.friends.remove.$delete({
       json: {
         userId,
       },
     });
+    toast.success("Friend removed successfully");
+  };
+
+  const handleErrors = async (promise: Promise<void>) => {
+    setLoading(true);
+    try {
+      await promise;
+    } catch (error) {
+      toast.error(mapError(error));
+    }
     setLoading(false);
   };
 
@@ -103,7 +120,7 @@ const FriendManagement: React.FC<FriendManagementProps> = ({ userId }) => {
             variant="destructive"
             size="sm"
             disabled={loading}
-            onClick={() => handleRemoveFriend(userId)}>
+            onClick={() => handleErrors(handleRemoveFriend(userId))}>
             Remove Friend
           </Button>
         ) : requestSent ? (
@@ -111,21 +128,30 @@ const FriendManagement: React.FC<FriendManagementProps> = ({ userId }) => {
             variant="destructive"
             size="sm"
             disabled={loading}
-            onClick={() => handleCancelFriendRequest(userId)}>
+            onClick={() => handleErrors(handleCancelFriendRequest(userId))}>
             Cancel Friend Request
           </Button>
         ) : requestReceived ? (
-          <Button
-            size="sm"
-            disabled={loading}
-            onClick={() => handleAcceptFriendRequest(userId)}>
-            Accept Friend Request
-          </Button>
+          <>
+            <Button
+              size="sm"
+              disabled={loading}
+              onClick={() => handleErrors(handleAcceptFriendRequest(userId))}>
+              Accept Friend Request
+            </Button>
+            <Button
+              variant="destructive"
+              size="sm"
+              disabled={loading}
+              onClick={() => handleErrors(handleDeclineFriendRequest(userId))}>
+              Decline Friend Request
+            </Button>
+          </>
         ) : (
           <Button
             size="sm"
             disabled={loading}
-            onClick={() => handleSendFriendRequest(userId)}>
+            onClick={() => handleErrors(handleSendFriendRequest(userId))}>
             Send Friend Request
           </Button>
         )}

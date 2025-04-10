@@ -26,6 +26,14 @@ export const client = hc<AppType>("http://localhost:5000/", {
         ...requestInit?.headers,
       },
       body: requestInit?.body,
+    }).then(async res => {
+      if (!res.ok) {
+        const errorMessage = await res.text();
+
+        throw new Error(errorMessage);
+      }
+
+      return res;
     });
   },
 });
